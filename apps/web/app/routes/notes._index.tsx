@@ -1,6 +1,6 @@
 import { Form, useLoaderData, redirect } from "react-router";
 import { NoteSchema } from "~/schemas/note";
-import { NotesClient } from "~/services/notes.client";
+import NotesClient from "~/services/notes.client";
 
 export async function loader() {
   const notes = await NotesClient.list();
