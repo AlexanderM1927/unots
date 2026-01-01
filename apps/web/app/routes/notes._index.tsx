@@ -1,9 +1,9 @@
 import { Form, useLoaderData, redirect } from "react-router";
-import { NoteSchema } from "~/schemas/note";
-import NotesClient from "~/services/notes.client";
+import { NoteSchema } from "../schemas/note";
+import { list, create } from "../services/notes";
 
 export async function loader() {
-  const notes = await NotesClient.list();
+  const notes = await list();
   return { notes };
 }
 
@@ -19,7 +19,7 @@ export async function action({ request }: { request: Request }) {
     return { ok: false, errors: parsed.error.flatten().fieldErrors, values: raw };
   }
 
-  const created = await NotesClient.create(parsed.data);
+  const created = await create(parsed.data);
   return redirect(`/notes/${created.id}`);
 }
 
@@ -29,7 +29,6 @@ export default function NotesIndex() {
   return (
     <div>
       <h1>Notas</h1>
-
       <ul>
         {data.notes.map((n) => (
           <li key={n.id}>

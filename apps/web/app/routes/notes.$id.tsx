@@ -1,9 +1,9 @@
 import { Form, useLoaderData, redirect } from "react-router";
 import { NoteSchema } from "~/schemas/note";
-import { NotesClient } from "~/services/notes.client";
+import { get, update, remove } from "~/services/notes";
 
 export async function loader({ params }: { params: any }) {
-  const note = await NotesClient.get(params.id);
+  const note = await get(params.id);
   return { note };
 }
 
@@ -12,7 +12,7 @@ export async function action({ request, params }: { request: Request; params: an
   const intent = String(form.get("intent") ?? "update");
 
   if (intent === "delete") {
-    await NotesClient.remove(params.id);
+    await remove(params.id);
     return redirect("/notes");
   }
 
@@ -25,7 +25,7 @@ export async function action({ request, params }: { request: Request; params: an
     return { ok: false, errors: parsed.error.flatten().fieldErrors, values: raw };
   }
 
-  await NotesClient.update(params.id, parsed.data);
+  await update(params.id, parsed.data);
   return redirect(`/notes/${params.id}`);
 }
 
